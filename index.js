@@ -46,6 +46,9 @@ function copy (options) {
     .on('error', log.s3.error)
 
   function transfer (file, enc, callback) {
+    if (file.name.indexOf('/') !== -1) {
+      file.name = file.name.replace(/^\/|\/$/g, '');
+    }
     s3.headObject({Key: file.name}, function (err, object) {
       if (err && err.code !== 'NotFound') return callback(err)
 
