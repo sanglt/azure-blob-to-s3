@@ -46,7 +46,8 @@ function copy (options) {
     .on('error', log.s3.error)
 
   function transfer (file, enc, callback) {
-    s3.headObject({Key: file.name}, function (err, object) {
+    let key = file.name.replace(/^\/|\/$/g, '')
+    s3.headObject({Key: key}, function (err, object) {
       if (err && err.code !== 'NotFound') return callback(err)
 
       if (object) {
@@ -62,7 +63,7 @@ function copy (options) {
         delay: 1000
       })
 
-      s3.upload({Key: file.name, Body: stream}, callback)
+      s3.upload({Key: key, Body: stream}, callback)
     })
   }
 
